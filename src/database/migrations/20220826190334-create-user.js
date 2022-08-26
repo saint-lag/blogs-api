@@ -6,19 +6,27 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       displayName: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        field: 'displayName',
       },
-      createdAt: {
+      email: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.STRING,
+        field: 'email',
       },
-      updatedAt: {
+      password: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.STRING,
+        field: 'password',
+      },
+      image: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        field: 'image',
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
