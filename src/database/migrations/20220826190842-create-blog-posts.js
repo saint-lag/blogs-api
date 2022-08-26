@@ -9,10 +9,12 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       title: {
+        allowNull: false,
         type: Sequelize.STRING,
         field: 'title',
       },
       content: {
+        allowNull: false,
         type: Sequelize.STRING,
         field: 'content',
       },
@@ -25,15 +27,15 @@ module.exports = {
         field: 'updated',
       },
       userId: {
-        type: Sequelize.INTEGER,
         allowNull: false,
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-        field: 'user_id',
+        type: Sequelize.INTEGER,
+        field: 'userId',
         references: {
           model: 'Users',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
     });
   },
