@@ -1,21 +1,16 @@
-const model = require('../database/models/user');
+const { User } = require('../database/models');
 const createToken = require('../util/createToken');
-const httpStatus = require('../helpers/http.status.codes');
 
-const login = async (payload) => {
-  const { email, password } = payload;
+const login = async ({ email, password }) => {
+  const query = await User.findOne({ where: { email, password } });
+  
+  if (!query) return null;
 
-  const user = await model.findOne({ where: { email, password } });
+  const { id, displayName } = query;
+  
+  const token = createToken({ id, displayName, email }, '1d');
 
-  if (!user) {
-    throw new Error('Invalid fields', {
-      cause: { status: httpStatus.HTTP_STATUS_BAD_REQUEST },
-    });
-  }
-
-  const { id, displayName } = user;
-
-  return createToken({ id, displayName, email });
+  return token;
 };
 
 module.exports = { login };

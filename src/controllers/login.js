@@ -7,7 +7,13 @@ const login = async (req, res) => {
 
   const token = await service.login({ email, password });
 
-  res.status(httpStatus.HTTP_STATUS_OK).json({ token });
+  if (!token) {
+    return res
+      .status(httpStatus.HTTP_STATUS_BAD_REQUEST)
+      .json({ message: 'Invalid fields' });
+  }
+
+  return res.status(httpStatus.HTTP_STATUS_OK).json({ token });
 };
 
 module.exports = login;
