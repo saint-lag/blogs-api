@@ -4,15 +4,25 @@ const createToken = require('../util/createToken');
 const createUser = async (payload) => {
   const { displayName, email, password, image } = payload;
 
-  const query = await User.findOne({ where: { email } });
+  const [user, created] = await User.findOrCreate({
+    where: { 
+      displayName, 
+      email,
+      password,
+      image,
+     },
+  });
 
-  if (query) return null;
+  console.log(user);
 
-  // needs to insert new user in table
-  
-  const token = createToken({ displayName, email, image }, '1d');
+  console.log(created);
 
-  return token;
+  if (!created) return null;
+
+  if (created) {
+    const token = createToken({ displayName, email, image }, '1d');
+    return token;
+  }
 };
 
 module.exports = { createUser };
