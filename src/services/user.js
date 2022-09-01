@@ -5,12 +5,12 @@ const createUser = async (payload) => {
   const { displayName, email, password, image } = payload;
 
   const [user, created] = await User.findOrCreate({
-    where: { 
-      displayName, 
+    where: {
+      displayName,
       email,
       password,
       image,
-     },
+    },
   });
 
   console.log(user);
@@ -25,4 +25,10 @@ const createUser = async (payload) => {
   }
 };
 
-module.exports = { createUser };
+const getAllUsers = async () => {
+  const users = await User.findAll({ attributes: { exclude: ['password'] } });
+
+  return users;
+};
+
+module.exports = { createUser, getAllUsers };

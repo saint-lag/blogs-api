@@ -23,4 +23,9 @@ const createUser = async (req, res) => {
   return res.status(httpStatus.HTTP_STATUS_CREATED).json({ token });
 };
 
-module.exports = createUser;
+const getAllUsers = async (_req, res) => {
+  const users = await service.getAllUsers();
+  return res.status(httpStatus.HTTP_STATUS_OK).json(users);
+};
+
+module.exports = { createUser, getAllUsers };
