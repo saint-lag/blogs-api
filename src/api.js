@@ -7,5 +7,6 @@ app.use(express.json());
 
 app.use('/login', routes.login);
 app.use('/user', routes.user);
+app.use('/categories', routes.categories);
 
 module.exports = app;
