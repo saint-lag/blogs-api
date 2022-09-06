@@ -12,6 +12,6 @@ router.post(
   categories.createCategory,
 );
 
-// router.get('/', categories);
+router.get('/', authentication.tokenValidation, categories.getAllCategories);
 
 module.exports = router;
