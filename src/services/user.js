@@ -1,5 +1,6 @@
 const { User } = require('../database/models');
 const createToken = require('../util/createToken');
+const httpStatus = require('../helpers/http.status.codes');
 
 const createUser = async (payload) => {
   const { displayName, email, password, image } = payload;
@@ -13,11 +14,7 @@ const createUser = async (payload) => {
     },
   });
 
-  console.log(user);
-
-  console.log(created);
-
-  if (!created) return null;
+  if (!created || !user) return null;
 
   if (created) {
     const token = createToken({ displayName, email, image }, '1d');
@@ -28,7 +25,22 @@ const createUser = async (payload) => {
 const getAllUsers = async () => {
   const users = await User.findAll({ attributes: { exclude: ['password'] } });
 
-  return users;
+  return users || null;
 };
 
-module.exports = { createUser, getAllUsers };
+const getUserById = async (id) => {
+  const user = await User.findByPk(id, {
+    attributes: { exclude: ['password'] },
+  });
+
+  if (!user) {
+    return {
+      code: httpStatus.HTTP_STATUS_NOT_FOUND,
+      message: { message: 'User does not exist' },
+    };
+  }
+
+  return { code: httpStatus.HTTP_STATUS_OK, user };
+};
+
+module.exports = { createUser, getAllUsers, getUserById };
