@@ -25,7 +25,7 @@ const createUser = async (req, res) => {
 
 const getAllUsers = async (_req, res) => {
   const data = await service.getAllUsers();
-  return res.status(httpStatus.HTTP_STATUS_CREATED).json(data);
+  return res.status(httpStatus.HTTP_STATUS_OK).json(data);
 };
 
 const getUserById = async (req, res) => {
