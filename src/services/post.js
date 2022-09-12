@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 const Sequelize = require('sequelize');
 const config = require('../database/config/config');
 const {
@@ -53,26 +52,14 @@ async function getAllPosts() {
   const data = await Promise.all(
     blogPostData.map(async (obj) => {
       const { id, userId, title, content, published, updated } = obj;
-      const postCategories = await PostCategory.findAll({
-        where: { postId: id },
-      });
+      const postCategories = await PostCategory.findAll({ where: { postId: id } });
       const { displayName, email, image } = await User.findByPk(userId);
       const categories = await Promise.all(await postCategories.map(async (postCategory) => {
-        const result = await Category.findAll({
-          where: { id: postCategory.categoryId },
-        });
+        const result = await Category.findAll({ where: { id: postCategory.categoryId } });
         return result.map((item) => ({ id: item.id, name: item.name }));
       }));
       const user = { id: userId, displayName, email, image };
-      const result = {
-        id,
-        title,
-        content,
-        userId,
-        published,
-        updated,
-        categories: categories[0],
-      };
+      const result = { id, title, content, userId, published, updated, categories: categories[0] };
       result.user = user;
       return result;
     }),
