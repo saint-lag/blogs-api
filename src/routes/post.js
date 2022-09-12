@@ -9,4 +9,6 @@ router.post('/', authentication.tokenValidation, validation.postValidation, post
 
 router.get('/', authentication.tokenValidation, post.getAllPosts);
 
+router.get('/:id', authentication.tokenValidation, post.getPostById);
+
 module.exports = router;

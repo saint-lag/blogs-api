@@ -55,9 +55,9 @@ async function getAllPosts() {
       const postCategories = await PostCategory.findAll({ where: { postId: id } });
       const { displayName, email, image } = await User.findByPk(userId);
       const categories = await Promise.all(await postCategories.map(async (postCategory) => {
-        const result = await Category.findAll({ where: { id: postCategory.categoryId } });
-        return result.map((item) => ({ id: item.id, name: item.name }));
-      }));
+          const result = await Category.findAll({ where: { id: postCategory.categoryId } });
+          return result.map((item) => ({ id: item.id, name: item.name }));
+        }));
       const user = { id: userId, displayName, email, image };
       const result = { id, title, content, userId, published, updated, categories: categories[0] };
       result.user = user;
@@ -67,4 +67,33 @@ async function getAllPosts() {
   return data;
 }
 
-module.exports = { createPost, getAllPosts };
+const getPostById = async (id) => {
+  const blogPostData = await BlogPost.findByPk(id);
+  // NOT FOUND
+  if (!blogPostData) return null;
+  // Gets blogPostData valuable info
+  const { title, content, userId, published, updated } = blogPostData;
+  // find User
+  const user = await User.findByPk(userId);
+  const { displayName, email, image } = user;
+  // Defines userData
+
+  const postCategories = await PostCategory.findAll({ where: { postId: id } });
+
+  const categories = await Promise.all(
+    await postCategories.map(async (postCategory) =>
+      Category.findAll({ where: { id: postCategory.categoryId } })),
+  );
+  const data = { id: JSON.parse(id), title, content, userId, published, updated };
+  // adds Keys and Values to final object 'Data'
+  data.user = { id: user.id, displayName, email, image };
+  data.categories = categories[0].map((c) => ({ id: c.id, name: c.name }));
+
+  return data;
+};
+
+module.exports = {
+  createPost,
+  getAllPosts,
+  getPostById,
+};
