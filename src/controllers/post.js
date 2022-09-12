@@ -11,4 +11,10 @@ const createPost = async (req, res) => {
   return res.status(httpStatus.HTTP_STATUS_CREATED).json(data);
 };
 
-module.exports = { createPost };
+const getAllPosts = async (_req, res) => {
+  const data = await service.getAllPosts();
+
+  return res.status(httpStatus.HTTP_STATUS_OK).json(data);
+};
+
+module.exports = { createPost, getAllPosts };
