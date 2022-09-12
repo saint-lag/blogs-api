@@ -1,27 +1,29 @@
+const Sequelize = require('sequelize');
+const config = require('../database/config/config');
 const {
   // User,
   BlogPost,
   PostCategory,
-  Category,
-  sequelize,
 } = require('../database/models');
 
+const sequelize = new Sequelize(config.development);
+
 const createPost = async ({ title, content, categoryIds }, user) => {
-  const checkCategory = await Category.findAll({ where: { id: categoryIds } });
+  const userId = user.id;
   try {
-    const result = await sequelize.transaction(async (t) => {
-      const newPost = await BlogPost.create(
-        { title, content, categoryIds, userId: user.id },
+    const data = await sequelize.transaction(async (t) => {
+      const { id, updated, published } = await BlogPost.create(
+        { title, content, userId },
         { transaction: t },
       );
-      const postCategory = checkCategory.map((category) => ({
-        postId: newPost.id,
-        categoryId: category.id,
-      }));
-      await PostCategory.bulkCreate(postCategory, { transaction: t });
-      return newPost;
+      console.log('UPDATED, PUBLISHED');
+      console.log(updated, published);
+      const postCategories = categoryIds.map((categoryId) => ({ postId: id, categoryId }));
+      await PostCategory.bulkCreate(postCategories, { transaction: t });
+
+      return { id, title, content, userId, updated, published };
     });
-    return result;
+    return data;
   } catch (error) {
     console.log(error.message);
   }

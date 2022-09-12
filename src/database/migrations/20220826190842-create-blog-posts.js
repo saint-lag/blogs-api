@@ -21,10 +21,12 @@ module.exports = {
       published: {
         type: Sequelize.DATE,
         field: 'published',
+        defaultValue: Sequelize.fn('now'),
       },
       updated: {
         type: Sequelize.DATE,
         field: 'updated',
+        defaultValue: Sequelize.fn('now'),
       },
       userId: {
         allowNull: false,

@@ -4,11 +4,11 @@ const PostCategory = (sequelize, Datatypes) => {
     {
       postId: {
         type: Datatypes.INTEGER,
-        foreignKey: true,
+        primaryKey: true,
       },
       categoryId: {
         type: Datatypes.INTEGER,
-        foreignKey: true,
+        primaryKey: true,
       },
     },
     { 
