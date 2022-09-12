@@ -4,7 +4,8 @@ const { Category } = require('../../database/models');
 const postValidation = async (req, res, next) => {
   const { title, content, categoryIds } = req.body;
   const lst = [title, categoryIds, content];
-  if (lst.some((item) => item === undefined || item === null)) {
+
+  if (lst.some((item) => item.length === 0)) {
     return res
       .status(httpStatus.HTTP_STATUS_BAD_REQUEST)
       .json({ message: 'Some required fields are missing' });
@@ -19,7 +20,7 @@ const postValidation = async (req, res, next) => {
     return res
       .status(httpStatus.HTTP_STATUS_BAD_REQUEST)
       .json({ message: '"categoryIds" not found' });
-  } 
+  }
   next();
 };
 
