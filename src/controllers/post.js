@@ -50,13 +50,9 @@ const updatePostById = async (req, res) => {
 const deletePostById = async (req, res) => {
   const { id } = req.params;
 
-  const { data, message, status } = await service.deletePostById(id, req.user);
-
-  if (!data) {
-    return res.status(status).json({ message });
-  }
-
-  return res.status(httpStatus.HTTP_STATUS_OK).json(data);
+  await service.deletePostById(id);
+  
+  return res.status(httpStatus.HTTP_STATUS_NO_CONTENT).end();
 };
 
 module.exports = {

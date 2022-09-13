@@ -8,7 +8,6 @@ const {
 } = require('../database/models');
 const {
   HTTP_STATUS_OK,
-  HTTP_STATUS_BAD_REQUEST,
 } = require('../helpers/http.status.codes');
 
 const sequelize = new Sequelize(config.development);
@@ -122,11 +121,9 @@ const updatePostById = async (id, { title, content }, user) => {
   return { data, message: null, status: HTTP_STATUS_OK };
 };
 
-const deletePostById = (id, user) => {
-  console.log(id, user);
-
-  const PLACEHOLDER = { data: null, message: 'oof', status: HTTP_STATUS_BAD_REQUEST };
-  return PLACEHOLDER;
+const deletePostById = async (id) => {
+  const data = await BlogPost.destroy({ where: { userId: id } });
+  return data;
 };
 
 module.exports = {
