@@ -1,7 +1,7 @@
 const httpStatus = require('../../helpers/http.status.codes');
 const { Category } = require('../../database/models');
 
-const postValidation = async (req, res, next) => {
+const getPostValidation = async (req, res, next) => {
   const { title, content, categoryIds } = req.body;
   const lst = [title, categoryIds, content];
 
@@ -24,4 +24,20 @@ const postValidation = async (req, res, next) => {
   next();
 };
 
-module.exports = postValidation;
+const updatePostValidation = async (req, res, next) => {
+  const { title, content } = req.body;
+  const lst = [title, content];
+
+  if (lst.some((item) => item.length === 0)) {
+    return res
+      .status(httpStatus.HTTP_STATUS_BAD_REQUEST)
+      .json({ message: 'Some required fields are missing' });
+  }
+  
+  next();
+};
+
+module.exports = {
+  getPostValidation,
+  updatePostValidation,
+};

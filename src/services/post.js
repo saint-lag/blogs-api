@@ -6,6 +6,7 @@ const {
   PostCategory,
   Category,
 } = require('../database/models');
+const { HTTP_STATUS_UNAUTHORIZED } = require('../helpers/http.status.codes');
 
 const sequelize = new Sequelize(config.development);
 
@@ -49,21 +50,21 @@ const createPost = async ({ title, content, categoryIds }, user) => {
 
 async function getAllPosts() {
   const blogPostData = await BlogPost.findAll();
-  const data = await Promise.all(
-    blogPostData.map(async (obj) => {
+  const data = await Promise.all(blogPostData.map(async (obj) => { 
       const { id, userId, title, content, published, updated } = obj;
       const postCategories = await PostCategory.findAll({ where: { postId: id } });
       const { displayName, email, image } = await User.findByPk(userId);
-      const categories = await Promise.all(await postCategories.map(async (postCategory) => {
+      const categories = await Promise.all(
+        await postCategories.map(async (postCategory) => {
           const result = await Category.findAll({ where: { id: postCategory.categoryId } });
-          return result.map((item) => ({ id: item.id, name: item.name }));
-        }));
+          return result.map((item) => ({ id: item.id, name: item.name })); 
+        }),
+      );
       const user = { id: userId, displayName, email, image };
       const result = { id, title, content, userId, published, updated, categories: categories[0] };
       result.user = user;
       return result;
-    }),
-  );
+    }));
   return data;
 }
 
@@ -92,8 +93,28 @@ const getPostById = async (id) => {
   return data;
 };
 
+const updatePostById = async (id, { title, content }, user) => {
+  const { userId } = await BlogPost.findByPk(id);
+
+  if (user.id !== userId) {
+    return {
+      data: null,
+      message: 'Unauthorized user',
+      status: HTTP_STATUS_UNAUTHORIZED,
+    };
+  }
+
+  // PLACEHOLDER
+  const data = undefined;
+  const message = 'failed :)';
+  const status = 400;
+
+  return { data, message, status };
+};
+
 module.exports = {
   createPost,
   getAllPosts,
   getPostById,
+  updatePostById,
 };
