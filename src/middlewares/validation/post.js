@@ -26,9 +26,10 @@ const getPostValidation = async (req, res, next) => {
 
 const updatePostValidation = async (req, res, next) => {
   const { title, content } = req.body;
+
   const lst = [title, content];
 
-  if (lst.some((item) => item.length === 0)) {
+  if (lst.some((item) => item === undefined || item.length === 0)) {
     return res
       .status(httpStatus.HTTP_STATUS_BAD_REQUEST)
       .json({ message: 'Some required fields are missing' });
