@@ -1,7 +1,12 @@
 const loginValidation = require('./login');
 const userValidation = require('./user');
 const categoriesValidation = require('./categories');
-const { getPostValidation, updatePostValidation } = require('./post');
+const {
+  getPostValidation,
+  updatePostValidation,
+  blogPostUserValidation,
+  blogPostIdValidation,
+} = require('./post');
 
 module.exports = {
   loginValidation,
@@ -9,4 +14,6 @@ module.exports = {
   categoriesValidation,
   getPostValidation,
   updatePostValidation,
+  blogPostUserValidation,
+  blogPostIdValidation,
 };

@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 const Sequelize = require('sequelize');
 const config = require('../database/config/config');
 const {
@@ -8,8 +7,8 @@ const {
   Category,
 } = require('../database/models');
 const {
-  HTTP_STATUS_UNAUTHORIZED,
   HTTP_STATUS_OK,
+  HTTP_STATUS_BAD_REQUEST,
 } = require('../helpers/http.status.codes');
 
 const sequelize = new Sequelize(config.development);
@@ -57,28 +56,14 @@ async function getAllPosts() {
   const data = await Promise.all(
     blogPostData.map(async (obj) => {
       const { id, userId, title, content, published, updated } = obj;
-      const postCategories = await PostCategory.findAll({
-        where: { postId: id },
-      });
+      const postCategories = await PostCategory.findAll({ where: { postId: id } });
       const { displayName, email, image } = await User.findByPk(userId);
-      const categories = await Promise.all(
-        await postCategories.map(async (postCategory) => {
-          const result = await Category.findAll({
-            where: { id: postCategory.categoryId },
-          });
-          return result.map((item) => ({ id: item.id, name: item.name }));
-        }),
-      );
+      const categories = await Promise.all(await postCategories.map(async (postCategory) => {
+          const result = await Category.findAll({ where: { id: postCategory.categoryId } });
+          return result.map((item) => ({ id: item.id, name: item.name })); 
+}));
       const user = { id: userId, displayName, email, image };
-      const result = {
-        id,
-        title,
-        content,
-        userId,
-        published,
-        updated,
-        categories: categories[0],
-      };
+      const result = { id, title, content, userId, published, updated, categories: categories[0] };
       result.user = user;
       return result;
     }),
@@ -103,14 +88,7 @@ const getPostById = async (id) => {
     await postCategories.map(async (postCategory) =>
       Category.findAll({ where: { id: postCategory.categoryId } })),
   );
-  const data = {
-    id: JSON.parse(id),
-    title,
-    content,
-    userId,
-    published,
-    updated,
-  };
+  const data = { id: JSON.parse(id), title, content, userId, published, updated };
   // adds Keys and Values to final object 'Data'
   data.user = { id: user.id, displayName, email, image };
   data.categories = categories[0].map((c) => ({ id: c.id, name: c.name }));
@@ -119,18 +97,8 @@ const getPostById = async (id) => {
 };
 
 const updatePostById = async (id, { title, content }, user) => {
-  const { userId, published } = await BlogPost.findByPk(id);
-
-  if (user.id !== userId) {
-    return {
-      data: null,
-      message: 'Unauthorized user',
-      status: HTTP_STATUS_UNAUTHORIZED,
-    };
-  }
-
   await BlogPost.update({ title, content }, { where: { id } });
-  const { updated } = await BlogPost.findByPk(id);
+  const { updated, published } = await BlogPost.findByPk(id);
 
   const postCategories = await PostCategory.findAll({ where: { postId: id } });
 
@@ -141,19 +109,10 @@ const updatePostById = async (id, { title, content }, user) => {
     }),
   );
 
-  console.log(`CATEGORIES: ${categories}`);
-
-  const data = {
-    id: JSON.parse(id),
-    title,
-    content,
-    userId,
-    published,
-    updated,
-  };
+  const data = { id: JSON.parse(id), title, content, userId: user.id, published, updated };
 
   data.user = {
-    id: userId,
+    id: user.id,
     displayName: user.displayName,
     email: user.email,
     image: user.image,
@@ -163,9 +122,17 @@ const updatePostById = async (id, { title, content }, user) => {
   return { data, message: null, status: HTTP_STATUS_OK };
 };
 
+const deletePostById = (id, user) => {
+  console.log(id, user);
+
+  const PLACEHOLDER = { data: null, message: 'oof', status: HTTP_STATUS_BAD_REQUEST };
+  return PLACEHOLDER;
+};
+
 module.exports = {
   createPost,
   getAllPosts,
   getPostById,
   updatePostById,
+  deletePostById,
 };

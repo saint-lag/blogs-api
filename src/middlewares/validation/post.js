@@ -1,5 +1,5 @@
 const httpStatus = require('../../helpers/http.status.codes');
-const { Category } = require('../../database/models');
+const { Category, BlogPost } = require('../../database/models');
 
 const getPostValidation = async (req, res, next) => {
   const { title, content, categoryIds } = req.body;
@@ -34,11 +34,41 @@ const updatePostValidation = async (req, res, next) => {
       .status(httpStatus.HTTP_STATUS_BAD_REQUEST)
       .json({ message: 'Some required fields are missing' });
   }
-  
+
+  next();
+};
+
+const blogPostUserValidation = async (req, res, next) => {
+  const { id } = req.params;
+
+  const { userId } = await BlogPost.findByPk(id);
+
+  if (req.user.id !== userId) {
+    return res
+      .status(httpStatus.HTTP_STATUS_UNAUTHORIZED)
+      .json({ message: 'Unauthorized user' });
+  }
+
+  next();
+};
+
+const blogPostIdValidation = async (req, res, next) => {
+  const { id } = req.params;
+
+  const data = await BlogPost.findByPk(id);
+
+  if (!data) {
+    return res
+      .status(httpStatus.HTTP_STATUS_NOT_FOUND)
+      .json({ message: 'Post does not exist' });
+  }
+
   next();
 };
 
 module.exports = {
   getPostValidation,
   updatePostValidation,
+  blogPostUserValidation,
+  blogPostIdValidation,
 };
