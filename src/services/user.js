@@ -43,4 +43,8 @@ const getUserById = async (id) => {
   return { code: httpStatus.HTTP_STATUS_OK, user };
 };
 
-module.exports = { createUser, getAllUsers, getUserById };
+const deleteUserById = async (id) => {
+  await User.destroy({ where: { id } });
+};
+
+module.exports = { createUser, getAllUsers, getUserById, deleteUserById };

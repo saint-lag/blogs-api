@@ -8,7 +8,7 @@ const DISPLAY_NAME_MESSAGE = '"displayName" length must be at least 8 characters
 const EMAIL_FORMAT_MESSAGE = '"email" must be a valid email';
 const INVALID_PASSWORD_MESSAGE = '"password" length must be at least 6 characters long';
 
-const userValidation = (req, res, next) => {
+const postUserValidation = (req, res, next) => {
   const { displayName, email, password } = req.body;
 
   const res400 = (message) => res.status(httpStatus.HTTP_STATUS_BAD_REQUEST).json({
@@ -24,4 +24,4 @@ const userValidation = (req, res, next) => {
   next();
 };
 
-module.exports = userValidation;
+module.exports = { postUserValidation };

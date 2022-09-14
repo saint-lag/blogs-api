@@ -1,5 +1,5 @@
 const loginValidation = require('./login');
-const userValidation = require('./user');
+const { postUserValidation } = require('./user');
 const categoriesValidation = require('./categories');
 const {
   getPostValidation,
@@ -10,7 +10,7 @@ const {
 
 module.exports = {
   loginValidation,
-  userValidation,
+  postUserValidation,
   categoriesValidation,
   getPostValidation,
   updatePostValidation,

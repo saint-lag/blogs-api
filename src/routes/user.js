@@ -5,10 +5,12 @@ const authentication = require('../middlewares/authentication');
 
 const router = express.Router();
 
-router.post('/', validation.userValidation, user.createUser);
+router.post('/', validation.postUserValidation, user.createUser);
 
 router.get('/', authentication.tokenValidation, user.getAllUsers);
 
 router.get('/:id', authentication.tokenValidation, user.getUserById);
+
+router.delete('/me', authentication.tokenValidation, user.deleteUserById);
 
 module.exports = router;
